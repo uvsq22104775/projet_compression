@@ -6,7 +6,8 @@ import os
 from math import log10, sqrt
 
 def load(filename):
-    toLoad= Image.open(filename)
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    toLoad= Image.open(os.path.join(script_dir, filename))
     return np.asarray(toLoad)
 
 
@@ -24,28 +25,11 @@ def idct2(a):
 
 
 
-def RGB_YCbCr():
-    mat = load("test.png")
-    new_mat = np.empty((mat.shape),dtype = np.uint8)
-    for i in range(mat.shape[0]):
-        for j in range(mat.shape[1]):
-
-            Y = min(mat[i,j,0] * 0.299
-            + mat[i,j,1] * 0.587
-            + mat[i,j,2] * 0.114
-            , 255)
-            
-            Cb = mat[i,j,0] * -0.1687
-            + mat[i,j,1] * -0.3313
-            + mat[i,j,2] * 0.5
-            + 128
-
-            Cr = mat[i,j,0] * 0.5
-            + mat[i,j,1] * -0.4187
-            + mat[i,j,2] * -0.0813
-            + 128
-
-            new_mat[i,j] = (Y, Cb, Cr)
+def RGB_YCbCr(image):
+    new_mat = np.empty(image.shape, dtype = np.uint8)
+    new_mat[:,:,0] = 0.299*image[:,:,0] + 0.587*image[:,:,1] + 0.114*image[:,:,2]
+    new_mat[:,:,1] = -0.1687*image[:,:,0] - 0.3313*image[:,:,1] + 0.5*image[:,:,2] + 128
+    new_mat[:,:,2] = 0.5*image[:,:,0] - 0.4187*image[:,:,1] + 0.0813*image[:,:,2] + 128
     return new_mat
 
 def YCbCr_RGB():
@@ -71,9 +55,7 @@ def YCbCr_RGB():
             new_mat[i,j] = (Y, Cb, Cr)
     return new_mat
 
-print(RGB_YCbCr())
-
 
 
 test = load("test.png")
-Image.fromarray(test,'RGB').show()
+Image.fromarray(RGB_YCbCr(test),mode = "YCbCr").show()

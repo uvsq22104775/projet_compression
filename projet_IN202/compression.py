@@ -25,37 +25,29 @@ def idct2(a):
 
 
 
+
+
 def RGB_YCbCr(image):
-    new_mat = np.empty(image.shape, dtype = np.uint8)
-    new_mat[:,:,0] = 0.299*image[:,:,0] + 0.587*image[:,:,1] + 0.114*image[:,:,2]
-    new_mat[:,:,1] = -0.1687*image[:,:,0] - 0.3313*image[:,:,1] + 0.5*image[:,:,2] + 128
-    new_mat[:,:,2] = 0.5*image[:,:,0] - 0.4187*image[:,:,1] + 0.0813*image[:,:,2] + 128
-    return new_mat
+    new_image = np.empty(image.shape, dtype = np.uint8)
+    new_image[:,:,0] = 0.299*image[:,:,0] + 0.587*image[:,:,1] + 0.114*image[:,:,2]
+    new_image[:,:,1] = -0.1687*image[:,:,0] - 0.3313*image[:,:,1] + 0.5*image[:,:,2] + 128
+    new_image[:,:,2] = 0.5*image[:,:,0] - 0.4187*image[:,:,1] - 0.0813*image[:,:,2] + 128
+    return new_image
 
-def YCbCr_RGB():
-    mat = load("test.png")
-    new_mat = np.empty((mat.shape),dtype = np.uint8)
-    for i in range(mat.shape[0]):
-        for j in range(mat.shape[1]):
 
-            Y = mat[i,j,0] * 0.299
-            + mat[i,j,1] * 0.587
-            + mat[i,j,2] * 0.114
-            
-            Cb = mat[i,j,0] * -0.1687
-            + mat[i,j,1] * -0.3313
-            + mat[i,j,2] * 0.5
-            + 128
+def YCbCr_RGB(image):
+    image = np.float64(image.copy())
+    new_image = np.empty(image.shape, dtype = np.uint8)
+    new_image[:,:,0] = np.clip(image[:,:,0] + 1.402*(image[:,:,2] - 128), 0, 255)
+    new_image[:,:,1] = np.clip(image[:,:,0] - 0.34414*(image[:,:,1] - 128) - 0.71414*(image[:,:,2] - 128), 0, 255)
+    new_image[:,:,2] = np.clip(image[:,:,0] + 1.772*(image[:,:,1] - 128), 0, 255)
+    return new_image
 
-            Cr = mat[i,j,0] * 0.5
-            + mat[i,j,1] * -0.4187
-            + mat[i,j,2] * -0.0813
-            + 128
 
-            new_mat[i,j] = (Y, Cb, Cr)
-    return new_mat
 
 
 
 test = load("test.png")
-Image.fromarray(RGB_YCbCr(test),mode = "YCbCr").show()
+# Image.fromarray(test, mode = "RGB").show()
+# Image.fromarray(RGB_YCbCr(test), mode = "YCbCr").show()
+# Image.fromarray(YCbCr_RGB(RGB_YCbCr(test)), mode = "RGB").show()

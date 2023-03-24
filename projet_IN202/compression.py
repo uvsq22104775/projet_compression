@@ -43,7 +43,10 @@ def YCbCr_RGB(image):
     new_image[:,:,2] = np.clip(image[:,:,0] + 1.772*(image[:,:,1] - 128), 0, 255)
     return new_image
 
-
+def padding(image):
+    new_image = np.empty(image.shape[0],image.shape[1],image.shape[2], dtype = np.uint8)
+    
+    return new_image
 
 
 
@@ -51,3 +54,4 @@ test = load("test.png")
 # Image.fromarray(test, mode = "RGB").show()
 # Image.fromarray(RGB_YCbCr(test), mode = "YCbCr").show()
 # Image.fromarray(YCbCr_RGB(RGB_YCbCr(test)), mode = "RGB").show()
+print(psnr(test, YCbCr_RGB(RGB_YCbCr(test))))

@@ -6,7 +6,7 @@ import os
 from math import log10, sqrt
 
 
-'''Question 4 à faire'''
+'''Question 6 à faire'''
 
 
 def load(filename):
@@ -147,7 +147,7 @@ test = load("test.png")
 
 #           Q4
 '''l'image deviens 2x plus courte en largeur'''
-sous_echantillonage(RGB_YCbCr(test))
+# sous_echantillonage(RGB_YCbCr(test))
 
 
 #           Q5

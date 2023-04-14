@@ -6,7 +6,7 @@ import os
 from math import log10, sqrt
 
 
-'''question 4'''
+'''Question 6 à faire'''
 
 
 def load(filename):
@@ -57,18 +57,39 @@ def padding(image):
     new_image = np.empty(shape, dtype = np.uint8)
     for x in range (orig_shape[0]):
         for y in range (orig_shape[1]):
-            new_image[x,y] = image[x,y]
+            new_image[x, y] = image[x, y]
     return new_image
 
-def antipadding(image):
+def anti_padding(image):
     global orig_shape
     new_image = np.empty(orig_shape, dtype = np.uint8)
     for x in range (orig_shape[0]):
         for y in range (orig_shape[1]):
-            new_image[x,y] = image[x,y]
+            new_image[x, y] = image[x, y]
     return new_image
 
 
+
+def sous_echantillonage(mat):
+    shape = list(mat.shape)
+    shape[1] = (shape[1] - 1) // 2 + 1
+    new_mat = np.empty(shape, dtype = np.uint8)
+    for x in range(new_mat.shape[0]):
+        for y in range(new_mat.shape[1]):
+            new_mat[x, y] = (mat[x, 2*y] / 2) + (mat[x , 2*y + 1] / 2)
+    return new_mat
+
+def anti_sous_echantillonage(mat):
+    shape = list(mat.shape)
+    shape[1] = shape[1]*2
+    new_mat = np.empty(shape, dtype = np.uint8)
+    for x in range(mat.shape[0]):
+        for y in range(mat.shape[1]):
+            new_mat[x, 2*y] = mat[x, y]
+            new_mat[x, 2*y + 1] = mat[x, y]
+    return new_mat
+
+print(sous_echantillonage(np.asarray([[1, 2, 3, 6], [3, 5, 10, 0]])))
 
 
 
@@ -86,8 +107,14 @@ test = load("test.png")
 '''calcule la ressemblance entre l'image transformée ↑ avec l'image originale'''
 # print(psnr(test, YCbCr_RGB(RGB_YCbCr(test))))
 
-'''transforme l'image pour faire de sorte que les dimensions soient des multiples de 8 (padding)'''
+'''les dimensions de l'image deviennent des multiples de 8 (padding)'''
 # Image.fromarray(padding(test), mode = "RGB").show()
 
-'''transforme l'image pour faire de sorte que le padding soit enlevé'''
-# Image.fromarray(antipadding(padding(test)), mode = "RGB").show()
+'''enlève un padding déjà ajouté'''
+# Image.fromarray(anti_padding(padding(test)), mode = "RGB").show()
+
+'''l'image deviens 2x plus courte en largeur'''
+# Image.fromarray(sous_echantillonage(test), mode = "RGB").show()
+
+'''l'image deviens 2x plus longue en largeur'''
+# Image.fromarray(anti_sous_echantillonage(sous_echantillonage(test)), mode = "RGB").show()

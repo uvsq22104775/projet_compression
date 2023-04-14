@@ -75,7 +75,6 @@ def anti_padding(image):
 
 
 def sous_echantillonage(mat):
-    global new_matY, new_matCb, new_matCr
     shape = list(mat.shape)
     shape[1] = (shape[1] - 1) // 2 + 1
 

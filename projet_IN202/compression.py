@@ -5,7 +5,7 @@ import scipy as sp
 import os
 from math import log10, sqrt
 
-
+'test'
 '''Question 6 à faire'''
 
 

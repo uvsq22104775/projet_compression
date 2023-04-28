@@ -115,10 +115,12 @@ def decoupage_matrice():
     # m = load("test.png")
    
     m_new = []
+    
+    decoupage = 8
    
-    for i in range(8):               # on la decoupe en bloc 8x8
+    for i in range(decoupage):               # on la decoupe en bloc 8x8
         liste = []
-        for j in range(8):
+        for j in range(decoupage):
             liste.append(m[i][j])
         m_new.append(liste)
         

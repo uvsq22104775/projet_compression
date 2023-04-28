@@ -5,8 +5,8 @@ import scipy as sp
 import os
 from math import log10, sqrt
 
-'test'
-'''Question 6 à faire'''
+
+
 
 
 def load(filename):
@@ -104,14 +104,37 @@ def anti_sous_echantillonage(matYmatCbmatCr):
     return new_mat
 
 
+# Question 6 
+
+
+def decoupage_matrice():
+    
+    # on prend à la base une matrice de dimension 16 * 24     (16 et 24 sont divisible par 8)
+    
+    m = [[j for j in range(24)] for i in range(16)]
+    # m = load("test.png")
+   
+    m_new = []
+   
+    for i in range(8):               # on la decoupe en bloc 8x8
+        liste = []
+        for j in range(8):
+            liste.append(m[i][j])
+        m_new.append(liste)
+        
+    return m_new
+
+print(decoupage_matrice())
+
+
+# Question 7 
 
 
 
 
 
 
-
-
+ 
 
 
 
@@ -152,4 +175,4 @@ test = load("test.png")
 
 #           Q5
 '''l'image deviens 2x plus longue en largeur'''
-Image.fromarray(anti_sous_echantillonage(sous_echantillonage(RGB_YCbCr(test))), mode = "YCbCr").show()
+# Image.fromarray(anti_sous_echantillonage(sous_echantillonage(RGB_YCbCr(test))), mode = "YCbCr").show()

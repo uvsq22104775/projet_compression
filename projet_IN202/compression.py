@@ -182,8 +182,8 @@ test = load("test.png")
 
 
 #           Q7
-# blocs = decoupage_matrice(padding(test))
+blocs = decoupage_matrice(RGB_YCbCr(padding(test)))
 # print(dct2(blocs))
 # print(idct2(blocs))
 # print(blocs.shape)
-# Image.fromarray(idct2(dct2(blocs)), mode = "YCbCr").show()
+Image.fromarray(dct2(blocs), mode = "YCbCr").show()

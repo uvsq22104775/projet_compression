@@ -105,7 +105,7 @@ def anti_sous_echantillonage(matYmatCbmatCr):
 
 
 # Question 6 
-
+#
 
 def decoupage_matrice(mat):
     m_new = np.empty(mat.shape, dtype = np.uint8)

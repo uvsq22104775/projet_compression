@@ -107,26 +107,26 @@ def anti_sous_echantillonage(matYmatCbmatCr):
 # Question 6 
 
 
-def decoupage_matrice():
-    
-    # on prend à la base une matrice de dimension 16 * 24     (16 et 24 sont divisible par 8)
-    
-    m = [[j for j in range(24)] for i in range(16)]
-    # m = load("test.png")
-   
-    m_new = []
-    
+def decoupage_matrice(mat):
+    m_new = np.empty(mat.shape, dtype = np.uint8)
     decoupage = 8
-   
-    for i in range(decoupage):               # on la decoupe en bloc 8x8
-        liste = []
-        for j in range(decoupage):
-            liste.append(m[i][j])
-        m_new.append(liste)
-        
+    liste4 = []
+    for x in range(mat.shape[0]//8):
+        liste3 = []
+        for y in range(mat.shape[1]//8):
+            liste2 = []
+            for i in range(decoupage):               # on la decoupe en bloc 8x8
+                liste1 = []
+                for j in range(decoupage):
+                    liste1.append(mat[i+8*x][j+8*y])
+                liste2.append(liste1)
+            liste3.append(liste2)
+        liste4.append(liste3)
+    m_new = np.array(liste4)
     return m_new
 
-print(decoupage_matrice())
+
+
 
 
 # Question 7 
@@ -178,3 +178,8 @@ test = load("test.png")
 #           Q5
 '''l'image deviens 2x plus longue en largeur'''
 # Image.fromarray(anti_sous_echantillonage(sous_echantillonage(RGB_YCbCr(test))), mode = "YCbCr").show()
+
+
+#           Q6
+'''l'image se divise en blocs de 8x8 dans une liste à 4 dimentions'''
+print(decoupage_matrice(test))

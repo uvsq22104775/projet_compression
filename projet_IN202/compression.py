@@ -172,9 +172,46 @@ def reconstruction_image(m_new):
 
     return img
 
-# Question 10
+# Question 8
+
+def filtrage(arr, threshold):
+    arr = np.array(arr)
+    mask = np.abs(arr) < threshold
+    arr[mask] = 0
+    return arr
 
 
+# Question 12
+
+def rle_compress(matrix):
+
+    matrix = matrix.astype(int)
+    # Flatten the matrix into a 1D array
+    flattened = matrix.reshape(-1)
+
+    # Initialize variables for RLE compression
+    count = 0
+    compressed = ""
+
+    # Iterate over the flattened array
+    for i in range(len(flattened)):
+        if flattened[i] == 0:
+            # If the value is 0, increment the count
+            count += 1
+        else:
+            # If the value is not 0, add the RLE-compressed string to the output
+            if count > 0:
+                compressed += "#{},".format(count)
+                count = 0
+            compressed += str(flattened[i])+","
+
+    # If there are any 0's at the end of the array, add the RLE-compressed string to the output
+    if count > 0:
+        compressed += "#{}".format(count)
+
+    # Write the compressed string to a file
+    with open("compressed.txt", "wb") as f:
+        f.write(bytes(compressed, "utf-8"))
 
 
  
@@ -229,6 +266,8 @@ test = load("test.png")
 #           Q7
 blocs = decoupage_matrice(RGB_YCbCr(padding(test)))
 # print(dct2(blocs))
-# print(idct2(blocs))
-# print(blocs.shape)
-Image.fromarray(reconstruction_image(idct2(dct2(blocs))), mode = "YCbCr").show()
+# Image.fromarray(reconstruction_image(idct2(dct2(blocs))), mode = "YCbCr").show()
+
+#           Q8
+print(filtrage(dct2(blocs),1.5))
+Image.fromarray(reconstruction_image(idct2(filtrage(dct2(blocs),1.5))), mode = "YCbCr").show()

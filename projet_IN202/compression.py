@@ -108,8 +108,12 @@ def anti_sous_echantillonage(matYmatCbmatCr):
 #
 
 def decoupage_matrice(mat):
-    m_new = np.empty(mat.shape, dtype = np.uint8)
+    global orig_shape_2
+    m_new_Y = np.empty(mat.shape, dtype = np.uint8)
+    m_new_Cb = np.empty(mat.shape, dtype = np.uint8)
+    m_new_Cr = np.empty(mat.shape, dtype = np.uint8)
     decoupage = 8
+    orig_shape_2 = [mat.shape[0]//8, mat.shape[1]//8]
     liste3 = []
     for x in range(mat.shape[0]//8):
         for y in range(mat.shape[1]//8):
@@ -117,15 +121,56 @@ def decoupage_matrice(mat):
             for i in range(decoupage):               # on la decoupe en bloc 8x8
                 liste1 = []
                 for j in range(decoupage):
-                    liste1.append(mat[i+8*x][j+8*y])
+                    liste1.append(mat[i+8*x][j+8*y][0])
                 liste2.append(liste1)
             liste3.append(liste2)
-    m_new = np.array(liste3)
-    return m_new
+    m_new_Y = np.array(liste3)
 
 
+    liste3 = []
+    for x in range(mat.shape[0]//8):
+        for y in range(mat.shape[1]//8):
+            liste2 = []
+            for i in range(decoupage):
+                liste1 = []
+                for j in range(decoupage):
+                    liste1.append(mat[i+8*x][j+8*y][1])
+                liste2.append(liste1)
+            liste3.append(liste2)
+    m_new_Cb = np.array(liste3)
 
-# Question 7 
+
+    liste3 = []
+    for x in range(mat.shape[0]//8):
+        for y in range(mat.shape[1]//8):
+            liste2 = []
+            for i in range(decoupage):
+                liste1 = []
+                for j in range(decoupage):
+                    liste1.append(mat[i+8*x][j+8*y][2])
+                liste2.append(liste1)
+            liste3.append(liste2)
+    m_new_Cr = np.array(liste3)
+    return [m_new_Y, m_new_Cb, m_new_Cr]
+
+
+# Question 7
+def reconstruction_image(m_new):
+    global orig_shape_2
+    decoupage = 8
+    img_h = orig_shape_2[0] * decoupage
+    img_w = orig_shape_2[1] * decoupage
+    img = np.empty((img_h, img_w, 3), dtype=np.uint8)
+
+    for x in range(orig_shape_2[0]):
+        for y in range(orig_shape_2[1]):
+            for i in range(decoupage):
+                for j in range(decoupage):
+                    img[i + x*decoupage][j + y*decoupage][0] = m_new[0][x*orig_shape_2[1] + y][i][j]
+                    img[i + x*decoupage][j + y*decoupage][1] = m_new[1][x*orig_shape_2[1] + y][i][j]
+                    img[i + x*decoupage][j + y*decoupage][2] = m_new[2][x*orig_shape_2[1] + y][i][j]
+
+    return img
 
 # Question 10
 
@@ -186,4 +231,4 @@ blocs = decoupage_matrice(RGB_YCbCr(padding(test)))
 # print(dct2(blocs))
 # print(idct2(blocs))
 # print(blocs.shape)
-Image.fromarray(dct2(blocs), mode = "YCbCr").show()
+Image.fromarray(reconstruction_image(idct2(dct2(blocs))), mode = "YCbCr").show()

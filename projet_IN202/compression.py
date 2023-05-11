@@ -175,6 +175,7 @@ def reconstruction_image(m_new):
 # Question 8
 
 def filtrage(arr, threshold):
+    mode_image = 1
     arr = np.array(arr)
     mask = np.abs(arr) < threshold
     arr[mask] = 0
@@ -269,5 +270,5 @@ blocs = decoupage_matrice(RGB_YCbCr(padding(test)))
 # Image.fromarray(reconstruction_image(idct2(dct2(blocs))), mode = "YCbCr").show()
 
 #           Q8
-print(filtrage(dct2(blocs),1.5))
-Image.fromarray(reconstruction_image(idct2(filtrage(dct2(blocs),1.5))), mode = "YCbCr").show()
+blocs = decoupage_matrice(RGB_YCbCr(padding(filtrage(test,25))))
+Image.fromarray(reconstruction_image(idct2(dct2(blocs))), mode = "YCbCr").show()

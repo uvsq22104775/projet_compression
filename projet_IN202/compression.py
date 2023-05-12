@@ -108,29 +108,38 @@ def anti_sous_echantillonage(matYmatCbmatCr):
 
 def decoupage_matrice(mat):
     global orig_shape_2
-    m_new = []
     orig_shape_2 = [mat.shape[0], mat.shape[1]]
+    m_new = np.empty(((mat.shape[0]//8) * (mat.shape[1]//8), 8, 8, 3), dtype=np.uint8)
     for x in range(mat.shape[0]//8):
-        for y in range(mat.shape[1]//8):            # on la decoupe en bloc 8x8
-            m_new.append(mat
-                     [8*x : 8*(x+1)]
-                     [8*y : 8*(y+1)])
+        for y in range(mat.shape[1]//8):
+            m_new[x*mat.shape[1]//8 + y] = mat[8*x:8*(x+1), 8*y:8*(y+1)]
     return m_new
 
 
+def reconstruction_image(mat):
+    global orig_shape_2, orig_shape
+    
+    new_mat = np.empty((orig_shape_2[0], orig_shape_2[1], 3), dtype = np.uint8)
+    k = 0
+    for i in range(orig_shape_2[0]//8):
+        for j in range(orig_shape_2[1]//8):
+            new_mat[8*i:8*(i+1), 8*j:8*(j+1)] = mat[k]
+            k += 1
+    return(new_mat)
+
 # Question 7
-def reconstruction_image(m_new):
-    global orig_shape_2
-    decoupage = 8
-    img_h = orig_shape_2[0] // decoupage
-    img_w = orig_shape_2[1] // decoupage
-    img = np.empty((orig_shape_2[0], orig_shape_2[1], 3), dtype=np.uint8)
 
-    for x in range(orig_shape_2[0]):
-        for y in range(orig_shape_2[1]):
-            
+def dct(blocks):
+    m_new = []
+    for i in range(len(blocks)):
+        m_new.append(dct2(blocks[i]))
+    return m_new
 
-    return img
+def idct(blocks):
+    m_new = []
+    for i in range(len(blocks)):
+        m_new.append(idct2(blocks[i]))
+    return m_new
 
 # Question 8
 
@@ -153,11 +162,6 @@ def fichier(mat):
     f = open("fichier_test.txt","w")
     f.write("SJPG\n",orig_shape_2[0] , orig_shape_2[1],"\n mode:",mode1,"\n",rle,"\n",mat)
     
-
-
-
-
-
 
 
 
@@ -185,7 +189,6 @@ def rle_compress(matrix):
                 compressed += "#" + str(count) + ","
                 count = 0
             compressed += str(flattened[i])+","
-            print(flattened[i])
 
     # If there are any 0's at the end of the array, add the RLE-compressed string to the output
     if count > 0:
@@ -240,18 +243,18 @@ test = load("test.png")
 
 
 #           Q6
-'''l'image se divise en blocs de 8x8 dans une liste à 4 dimentions'''
+'''l'image se divise en blocs de 8x8'''
 # print(decoupage_matrice(test))
 
 
 #           Q7
 blocs = decoupage_matrice(RGB_YCbCr(padding(test)))
-# print(dct2(blocs))
-# Image.fromarray(reconstruction_image(idct2(dct2(blocs))), mode = "YCbCr").show()
+print(dct(blocs))
+# Image.fromarray(reconstruction_image(idct(dct(blocs))), mode = "YCbCr").show()
 
 #           Q8
 # blocs = decoupage_matrice(RGB_YCbCr(padding(filtrage(test,25))))
-Image.fromarray(reconstruction_image(idct2(dct2(blocs))), mode = "YCbCr").show()
+# Image.fromarray(reconstruction_image(idct(dct(blocs))), mode = "YCbCr").show()
 
 #           Q12
-rle_compress(dct2(blocs))
+rle_compress(dct(blocs))

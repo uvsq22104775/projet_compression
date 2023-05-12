@@ -104,71 +104,31 @@ def anti_sous_echantillonage(matYmatCbmatCr):
     return new_mat
 
 
-# Question 6 
-#
+# Question 6
 
 def decoupage_matrice(mat):
     global orig_shape_2
-    m_new_Y = np.empty(mat.shape, dtype = np.uint8)
-    m_new_Cb = np.empty(mat.shape, dtype = np.uint8)
-    m_new_Cr = np.empty(mat.shape, dtype = np.uint8)
-    decoupage = 8
-    orig_shape_2 = [mat.shape[0]//8, mat.shape[1]//8]
-    liste3 = []
+    m_new = []
+    orig_shape_2 = [mat.shape[0], mat.shape[1]]
     for x in range(mat.shape[0]//8):
-        for y in range(mat.shape[1]//8):
-            liste2 = []
-            for i in range(decoupage):               # on la decoupe en bloc 8x8
-                liste1 = []
-                for j in range(decoupage):
-                    liste1.append(mat[i+8*x][j+8*y][0])
-                liste2.append(liste1)
-            liste3.append(liste2)
-    m_new_Y = np.array(liste3)
-
-
-    liste3 = []
-    for x in range(mat.shape[0]//8):
-        for y in range(mat.shape[1]//8):
-            liste2 = []
-            for i in range(decoupage):
-                liste1 = []
-                for j in range(decoupage):
-                    liste1.append(mat[i+8*x][j+8*y][1])
-                liste2.append(liste1)
-            liste3.append(liste2)
-    m_new_Cb = np.array(liste3)
-
-
-    liste3 = []
-    for x in range(mat.shape[0]//8):
-        for y in range(mat.shape[1]//8):
-            liste2 = []
-            for i in range(decoupage):
-                liste1 = []
-                for j in range(decoupage):
-                    liste1.append(mat[i+8*x][j+8*y][2])
-                liste2.append(liste1)
-            liste3.append(liste2)
-    m_new_Cr = np.array(liste3)
-    return [m_new_Y, m_new_Cb, m_new_Cr]
+        for y in range(mat.shape[1]//8):            # on la decoupe en bloc 8x8
+            m_new.append(mat
+                     [8*x : 8*(x+1)]
+                     [8*y : 8*(y+1)])
+    return m_new
 
 
 # Question 7
 def reconstruction_image(m_new):
     global orig_shape_2
     decoupage = 8
-    img_h = orig_shape_2[0] * decoupage
-    img_w = orig_shape_2[1] * decoupage
-    img = np.empty((img_h, img_w, 3), dtype=np.uint8)
+    img_h = orig_shape_2[0] // decoupage
+    img_w = orig_shape_2[1] // decoupage
+    img = np.empty((orig_shape_2[0], orig_shape_2[1], 3), dtype=np.uint8)
 
     for x in range(orig_shape_2[0]):
         for y in range(orig_shape_2[1]):
-            for i in range(decoupage):
-                for j in range(decoupage):
-                    img[i + x*decoupage][j + y*decoupage][0] = m_new[0][x*orig_shape_2[1] + y][i][j]
-                    img[i + x*decoupage][j + y*decoupage][1] = m_new[1][x*orig_shape_2[1] + y][i][j]
-                    img[i + x*decoupage][j + y*decoupage][2] = m_new[2][x*orig_shape_2[1] + y][i][j]
+            
 
     return img
 
@@ -186,6 +146,7 @@ def filtrage(arr, threshold):
 
 def rle_compress(matrix):
 
+    matrix = np.array(matrix)
     matrix = matrix.astype(int)
     # Flatten the matrix into a 1D array
     flattened = matrix.reshape(-1)
@@ -202,17 +163,17 @@ def rle_compress(matrix):
         else:
             # If the value is not 0, add the RLE-compressed string to the output
             if count > 0:
-                compressed += "#{},".format(count)
+                compressed += "#" + str(count) + ","
                 count = 0
             compressed += str(flattened[i])+","
+            print(flattened[i])
 
     # If there are any 0's at the end of the array, add the RLE-compressed string to the output
     if count > 0:
-        compressed += "#{}".format(count)
-
+        compressed += "#"+str(count)
     # Write the compressed string to a file
-    with open("compressed.txt", "wb") as f:
-        f.write(bytes(compressed, "utf-8"))
+    with open("compressed.txt", "w") as f:
+        f.write(str(compressed))
 
 
  
@@ -270,5 +231,8 @@ blocs = decoupage_matrice(RGB_YCbCr(padding(test)))
 # Image.fromarray(reconstruction_image(idct2(dct2(blocs))), mode = "YCbCr").show()
 
 #           Q8
-blocs = decoupage_matrice(RGB_YCbCr(padding(filtrage(test,25))))
+# blocs = decoupage_matrice(RGB_YCbCr(padding(filtrage(test,25))))
 Image.fromarray(reconstruction_image(idct2(dct2(blocs))), mode = "YCbCr").show()
+
+#           Q12
+rle_compress(dct2(blocs))

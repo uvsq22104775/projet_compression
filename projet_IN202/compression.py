@@ -5,7 +5,7 @@ import scipy as sp
 import os
 from math import log10, sqrt
 
-
+rle = "NORLE"
 
 
 
@@ -142,10 +142,29 @@ def filtrage(arr, threshold):
     return arr
 
 
+
+# Question 10 et Question 11 
+
+
+
+
+def fichier(mat):
+    
+    f = open("fichier_test.txt","w")
+    f.write("SJPG\n",orig_shape_2[0] , orig_shape_2[1],"\n mode:",mode1,"\n",rle,"\n",mat)
+    
+
+
+
+
+
+
+
+
 # Question 12
 
 def rle_compress(matrix):
-
+    rle = "RLE"
     matrix = np.array(matrix)
     matrix = matrix.astype(int)
     # Flatten the matrix into a 1D array

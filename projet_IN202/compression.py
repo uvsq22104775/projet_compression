@@ -108,6 +108,7 @@ def anti_sous_echantillonage(matYmatCbmatCr):
 
 def decoupage_matrice(mat):
     global orig_shape_2
+
     orig_shape_2 = [mat.shape[0], mat.shape[1]]
     m_new = np.empty(((mat.shape[0]//8) * (mat.shape[1]//8), 8, 8, 3), dtype=np.uint8)
     for x in range(mat.shape[0]//8):
@@ -150,6 +151,22 @@ def filtrage(arr, threshold):
     arr[mask] = 0
     return arr
 
+# Question 9
+
+def image_mode(image, mode):
+    if mode == 0:
+        blocs = dct(decoupage_matrice(RGB_YCbCr(padding(image))))
+        fichier(blocs, mode)
+    elif mode == 1:
+        blocs = dct(decoupage_matrice(RGB_YCbCr(padding(filtrage(image,25)))))
+        fichier(blocs, mode)
+    elif mode == 2:
+        blocs = dct(decoupage_matrice(anti_sous_echantillonage(sous_echantillonage(RGB_YCbCr(padding(filtrage(image,25)))))))
+        fichier(blocs, mode)
+
+
+
+
 
 
 # Question 10 et Question 11 
@@ -157,10 +174,11 @@ def filtrage(arr, threshold):
 
 
 
-def fichier(mat):
-    
+def fichier(mat, mode):
+    global rle, orig_shape_2
+
     f = open("fichier_test.txt","w")
-    f.write("SJPG\n",orig_shape_2[0] , orig_shape_2[1],"\n mode:",mode1,"\n",rle,"\n",mat)
+    f.write("SJPG\n" + str(orig_shape_2[0]) + " " + str(orig_shape_2[1]) + "\n" + str(mode) + "\n" + str(rle) + "\n" + str(mat))
     
 
 
@@ -248,13 +266,20 @@ test = load("test.png")
 
 
 #           Q7
+'''l'image en blocs 8x8 est affectée par dct2'''
 blocs = decoupage_matrice(RGB_YCbCr(padding(test)))
-print(dct(blocs))
+# print(dct(blocs))
 # Image.fromarray(reconstruction_image(idct(dct(blocs))), mode = "YCbCr").show()
 
 #           Q8
-# blocs = decoupage_matrice(RGB_YCbCr(padding(filtrage(test,25))))
+'''l'image passe d'abord par un filtre qui retire toutes les valeurs trop petites'''
+blocs = decoupage_matrice(RGB_YCbCr(padding(filtrage(test,25))))
 # Image.fromarray(reconstruction_image(idct(dct(blocs))), mode = "YCbCr").show()
+
+#           Q9
+'''applique le mode 0, 1 ou 2 de compression à l'image'''
+image_mode(test,2)
+
 
 #           Q12
 rle_compress(dct(blocs))

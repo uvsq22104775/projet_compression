@@ -220,12 +220,52 @@ def rle_compress(matrix):
 # Question 13
 
 def decompression(mat):
-    return anti_padding(YCbCr_RGB(reconstruction_image(idct(mat))))
+    return YCbCr_RGB(reconstruction_image(idct(mat)))
+
+# Question 14
+
+def read_grids_from_file(file_path):
+    global orig_shape, orig_shape_2
+    with open(file_path, 'r') as file:
+        lines = file.readlines()
+        orig_shape_2 = []
+        grids = []
+        grid_y = []
+        grid_cb = []
+        grid_cr = []
+
+        orig_shape = [int(element) for element in lines[1].strip().split(' ')]
+        orig_shape_2 = [int(element) for element in lines[1].strip().split(' ')]
+
+        lines = lines[4:]
+
+        for index, line in enumerate(lines):
+            line = line.strip()
+            elements = line.split(' ')
+
+            if index % 3 == 0:
+                grid_y = process_elements(elements)
+            elif index % 3 == 1:
+                grid_cb = process_elements(elements)
+            else:
+                grid_cr = process_elements(elements)
+
+                grid_array = [[grid_y[i], grid_cb[i], grid_cr[i]] for i in range(8)]
+                grids.append(grid_array)
+
+        return np.array(grids)
 
 
+def process_elements(elements):
+    grid = []
+    for element in elements:
+        if element.startswith('#'):
+            num_zeros = int(element[1:])
+            grid.extend([0] * num_zeros)
+        else:
+            grid.append(int(element))
+    return grid
 
-
- 
 
 
 
@@ -297,4 +337,8 @@ test = load("test.png")
 
 
 #           Q13
-Image.fromarray(decompression(image_mode(test,0)), mode = "RGB").show()
+# Image.fromarray(decompression(image_mode(test,0)), mode = "RGB").show()
+
+#           Q14
+print(read_grids_from_file('projet_IN202/mode1'))
+# Image.fromarray(decompression(read_grids_from_file('projet_IN202/mode1')))

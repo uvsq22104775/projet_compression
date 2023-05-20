@@ -163,6 +163,7 @@ def image_mode(image, mode):
     elif mode == 2:
         blocs = dct(decoupage_matrice(anti_sous_echantillonage(sous_echantillonage(RGB_YCbCr(padding(filtrage(image,25)))))))
         fichier(blocs, mode)
+    return blocs
 
 
 
@@ -216,6 +217,14 @@ def rle_compress(matrix):
         f.write(str(compressed))
 
 
+# Question 13
+
+def decompression(mat):
+    return anti_padding(YCbCr_RGB(reconstruction_image(idct(mat))))
+
+
+
+
  
 
 
@@ -267,19 +276,25 @@ test = load("test.png")
 
 #           Q7
 '''l'image en blocs 8x8 est affectée par dct2'''
-blocs = decoupage_matrice(RGB_YCbCr(padding(test)))
+# blocs = decoupage_matrice(RGB_YCbCr(padding(test)))
 # print(dct(blocs))
 # Image.fromarray(reconstruction_image(idct(dct(blocs))), mode = "YCbCr").show()
 
+
 #           Q8
 '''l'image passe d'abord par un filtre qui retire toutes les valeurs trop petites'''
-blocs = decoupage_matrice(RGB_YCbCr(padding(filtrage(test,25))))
+# blocs = decoupage_matrice(RGB_YCbCr(padding(filtrage(test,25))))
 # Image.fromarray(reconstruction_image(idct(dct(blocs))), mode = "YCbCr").show()
+
 
 #           Q9
 '''applique le mode 0, 1 ou 2 de compression à l'image'''
-image_mode(test,2)
+# image_mode(test,0)
 
 
 #           Q12
-rle_compress(dct(blocs))
+# rle_compress(dct(blocs))
+
+
+#           Q13
+Image.fromarray(decompression(image_mode(test,0)), mode = "RGB").show()

@@ -20,19 +20,15 @@ Les étapes clé de la compression :
 - Le Traitement d'image 
 
     Le padding :
-    
         Ajoute des pixels noir sur les lignes du bas et colonnes de droite jusqu'à ce que les dimensions de la matrice soient multiple de 8
 
     L'anti-padding :
-    
         Retour à la matrice de depart sans remplissage du padding
 
     Le sous-echantillonage:
-    
         Permet de rendre la matrice 2 fois plus petite en remplacent 2 pixel voisin de la matrice par la moyenne de la chrominance CbCr de ces 2 pixel
-    
+        
     L'anti sous-echantillonage:
-    
         Permet de multiplier par 2 la dimension d'une image (dans notre exemple revenir à notre image de depart) 
 
 - Le decoupage de la matrice
